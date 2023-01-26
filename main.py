@@ -1,5 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QFileDialog
+from imageProcessing import findHull
 
 ################
 # CODE FOR GUI #
@@ -25,6 +26,7 @@ class Ui_MainWindow(object):
         self.loadImage.setGeometry(QtCore.QRect(110, 460, 75, 23))
         self.loadImage.setObjectName("loadImage")
         self.loadImage.clicked.connect(self.loadImageClick)
+        self.response = []
         self.progressBar = QtWidgets.QProgressBar(self.centralwidget)
         self.progressBar.setGeometry(QtCore.QRect(70, 430, 401, 23))
         self.progressBar.setProperty("value", 24)
@@ -89,13 +91,15 @@ class Ui_MainWindow(object):
         self.actionLoad_Image.setText(_translate("MainWindow", "Load Image"))      
     
     def loadImageClick(self):
-        response = QFileDialog.getOpenFileName(
+        self.response = QFileDialog.getOpenFileName(
             caption='Select Image File',
         )
-        self.label.setPixmap(QtGui.QPixmap(response[0]))
+        self.label.setPixmap(QtGui.QPixmap(self.response[0]))
     
     def applyAlgoClick(self):
-        pass
+        findHull(self.response[0])
+        self.label.setPixmap(QtGui.QPixmap('newIMG.jpg'))
+        
 
 if __name__ == "__main__":
     import sys

@@ -2,6 +2,8 @@ import cv2
 import os
 import numpy as np
 import jarvisAlgorithm as ja
+from triangulation import Delaunay2D
+
 
 def findHull(imgPath):
     img = cv2.imread(imgPath, cv2.IMREAD_GRAYSCALE)
@@ -18,27 +20,44 @@ def findHull(imgPath):
     max_dot_size = 1000
     points = []
 
-    # Iterate through the contours and draw a circle around each black dot
-    pointDict = {}
+    # Filter through detected dots to remove garbage (based on size)
+    # And add the center of these verified dots to a new set called points
     for contour in contours:
         if min_dot_size <= cv2.contourArea(contour) <= max_dot_size:
             (x, y), radius = cv2.minEnclosingCircle(contour)
             center = (int(x), int(y))
             points.append(center)
 
-    convexHull = ja.convexHull(points, len(points))
+    #convexHull = ja.convexHull(points, len(points))
+    print(points)
+    for point in points:
+        cv2.circle(img, point, 5, (0, 255, 0), 2)
 
-    for point in convexHull:
-        cv2.circle(img, point, 10, (0, 255, 0), 2)
+    # computing triangles of our filterd set of points
+    dt = Delaunay2D()
+    for point in points:
+        dt.addPoint(point)
+    triangles = dt.exportTriangles()
+    print(dt.exportTriangles())
+
+    for triangle in triangles:
+        img = cv2.line(img, points[triangle[0]],
+                       points[triangle[1]], (0, 0, 0), 3)
+        img = cv2.line(img, points[triangle[0]],
+                       points[triangle[2]], (0, 0, 0), 3)
+        img = cv2.line(img, points[triangle[1]],
+                       points[triangle[2]], (0, 0, 0), 3)
 
     cv2.imshow("Black Dots", img)
-    cv2.imwrite('newImg.jpg', img)
+    #newIMG = cv2.imwrite('newImg.jpg', img)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
-    
+
 
 if __name__ == "__main__":
-    findHull('IMG_4100.jpg')
-    try: 
-        os.remove('/home/joneseaw/code/compGeo/GeometricAlgorithmAnalyzer/newImg.jpg')
-    except: pass
+    findHull('IMG_4102.png')
+    try:
+        os.remove(
+            '/home/joneseaw/code/compGeo/GeometricAlgorithmAnalyzer/newImg.jpg')
+    except:
+        pass
