@@ -1,29 +1,35 @@
-import cv2 as cv
+import cv2
 import numpy as np
+import jarvisAlgorithm as ja
 
-cap = cv.VideoCapture(0)
+img = cv2.imread('IMG_4100.jpg', cv2.IMREAD_GRAYSCALE)
+img = cv2.resize(img, (0, 0), fx=0.40, fy=0.40)
 
-while True:
-    ret, frame = cap.read()
+# Threshold the image to create a binary image
+_, thresholded = cv2.threshold(img, 127, 255, cv2.THRESH_BINARY)
 
-    cv.imshow('frame', frame)
+# Find contours in the binary image
+contours, _ = cv2.findContours(
+    thresholded, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
 
-    if cv.waitKey(1) == ord('q'):
-        break
+# Define the minimum and maximum size for the dots
+min_dot_size = 50
+max_dot_size = 1000
+points = []
 
+# Iterate through the contours and draw a circle around each black dot
+pointDict = {}
+for contour in contours:
+    if min_dot_size <= cv2.contourArea(contour) <= max_dot_size:
+        (x, y), radius = cv2.minEnclosingCircle(contour)
+        center = (int(x), int(y))
+        points.append(center)
 
+convexHull = ja.convexHull(points, len(points))
 
+for point in convexHull:
+    cv2.circle(img, point, 10, (0, 255, 0), 2)
 
-#img1 = cv.imread('IMG_4101.jpg')
-
-#def rescaleImage(frame, scale=0.50):
-#    width = int(frame.shape[1] * scale)
-#    height = int(frame.shape[0] * scale)
-#    dimensions = (width, height)
-#    return cv.resize(frame, dimensions, interpolation=cv.INTER_AREA)
-
-#re_img1 = rescaleImage(img1, scale=0.20)
-#cv.imshow('image', re_img1)
-
-#cv.waitKey(0)
-#cv.destroyAllWindows()
+cv2.imshow("Black Dots", img)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
