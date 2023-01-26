@@ -1,4 +1,9 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QFileDialog
+
+################
+# CODE FOR GUI #
+################
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -6,9 +11,9 @@ class Ui_MainWindow(object):
         MainWindow.resize(697, 529)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
-        self.pushButton = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton.setGeometry(QtCore.QRect(530, 390, 91, 21))
-        self.pushButton.setObjectName("pushButton")
+        self.applyAlgo = QtWidgets.QPushButton(self.centralwidget)
+        self.applyAlgo.setGeometry(QtCore.QRect(520, 390, 111, 21))
+        self.applyAlgo.setObjectName("pushButton")
         self.label = QtWidgets.QLabel(self.centralwidget)
         self.label.setGeometry(QtCore.QRect(50, 20, 401, 401))
         self.label.setLineWidth(1)
@@ -16,9 +21,10 @@ class Ui_MainWindow(object):
         self.label.setPixmap(QtGui.QPixmap("selectIMG.jpg"))
         self.label.setScaledContents(True)
         self.label.setObjectName("label")
-        self.pushButton_2 = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_2.setGeometry(QtCore.QRect(110, 460, 75, 23))
-        self.pushButton_2.setObjectName("pushButton_2")
+        self.loadImage = QtWidgets.QPushButton(self.centralwidget)
+        self.loadImage.setGeometry(QtCore.QRect(110, 460, 75, 23))
+        self.loadImage.setObjectName("loadImage")
+        self.loadImage.clicked.connect(self.loadImageClick)
         self.progressBar = QtWidgets.QProgressBar(self.centralwidget)
         self.progressBar.setGeometry(QtCore.QRect(70, 430, 401, 23))
         self.progressBar.setProperty("value", 24)
@@ -28,9 +34,9 @@ class Ui_MainWindow(object):
         self.line.setFrameShape(QtWidgets.QFrame.VLine)
         self.line.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line.setObjectName("line")
-        self.pushButton_3 = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_3.setGeometry(QtCore.QRect(320, 460, 75, 23))
-        self.pushButton_3.setObjectName("pushButton_3")
+        self.useCamera = QtWidgets.QPushButton(self.centralwidget)
+        self.useCamera.setGeometry(QtCore.QRect(320, 460, 75, 23))
+        self.useCamera.setObjectName("useCamera")
         self.frame = QtWidgets.QFrame(self.centralwidget)
         self.frame.setGeometry(QtCore.QRect(49, 19, 401, 401))
         self.frame.setFrameShape(QtWidgets.QFrame.WinPanel)
@@ -73,14 +79,23 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Algorithm Applier"))   
-        self.pushButton.setText(_translate("MainWindow", "Apply Algorithm"))       
-        self.pushButton_2.setText(_translate("MainWindow", "Load Image"))
-        self.pushButton_3.setText(_translate("MainWindow", "Use Camera"))
+        self.applyAlgo.setText(_translate("MainWindow", "Apply Algorithm"))       
+        self.loadImage.setText(_translate("MainWindow", "Load Image"))
+        self.useCamera.setText(_translate("MainWindow", "Use Camera"))
         self.comboBox.setItemText(0, _translate("MainWindow", "Convex Hull"))      
         self.comboBox.setItemText(1, _translate("MainWindow", "Trianglulization")) 
         self.label_2.setText(_translate("MainWindow", "Geometric Algorithm Applier"))
         self.label_3.setText(_translate("MainWindow", "Made by: Ethan J and John T"))
         self.actionLoad_Image.setText(_translate("MainWindow", "Load Image"))      
+    
+    def loadImageClick(self):
+        response = QFileDialog.getOpenFileName(
+            caption='Select Image File',
+        )
+        self.label.setPixmap(QtGui.QPixmap(response[0]))
+    
+    def applyAlgoClick(self):
+        pass
 
 if __name__ == "__main__":
     import sys
