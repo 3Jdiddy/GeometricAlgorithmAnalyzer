@@ -1,11 +1,10 @@
 import cv2
 import os
 import numpy as np
-import jarvisAlgorithm as ja
 from triangulation import Delaunay2D
 
 
-def findHull(imgPath):
+def findTriangulation(imgPath):
     img = cv2.imread(imgPath, cv2.IMREAD_GRAYSCALE)
     img = cv2.resize(img, (0, 0), fx=0.40, fy=0.40)
     # Threshold the image to create a binary image
@@ -14,10 +13,16 @@ def findHull(imgPath):
     # Find contours in the binary image
     contours, _ = cv2.findContours(
         thresholded, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
-
-    # Define the minimum and maximum size for the dots
-    min_dot_size = 50
-    max_dot_size = 1000
+    """
+    Here I define the minimum and maximum size for the dots
+    I made sure the the min and max dot size scales with the size of our image.
+    Looks confusing, but its just based on a control I crunched some numbers on
+    The important thing is to make sure the dot size boundries on dependent on the size of the image.
+    A dot of size 50x50px could be resonable on an 2500x2500px image, but on a 100x100 image, it would be far too big.
+    """
+    dimensions = img.shape
+    min_dot_size = np.sqrt((0.005* (dimensions[0] * dimensions[1])))
+    max_dot_size = np.sqrt((0.36* (dimensions[0] * dimensions[1])))
     points = []
 
     # Filter through detected dots to remove garbage (based on size)
@@ -29,35 +34,28 @@ def findHull(imgPath):
             points.append(center)
 
     #convexHull = ja.convexHull(points, len(points))
-    print(points)
+ 
     for point in points:
-        cv2.circle(img, point, 5, (0, 255, 0), 2)
+        cv2.circle(img, point, int(min_dot_size/10), (0, 255, 0), 2)
 
     # computing triangles of our filterd set of points
     dt = Delaunay2D()
     for point in points:
         dt.addPoint(point)
     triangles = dt.exportTriangles()
-    print(dt.exportTriangles())
+
 
     for triangle in triangles:
         img = cv2.line(img, points[triangle[0]],
-                       points[triangle[1]], (0, 0, 0), 3)
+                       points[triangle[1]], (0, 0, 0), 1)
         img = cv2.line(img, points[triangle[0]],
-                       points[triangle[2]], (0, 0, 0), 3)
+                       points[triangle[2]], (0, 0, 0), 1)
         img = cv2.line(img, points[triangle[1]],
-                       points[triangle[2]], (0, 0, 0), 3)
+                       points[triangle[2]], (0, 0, 0), 1)
 
-    cv2.imshow("Black Dots", img)
-    #newIMG = cv2.imwrite('newImg.jpg', img)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
-
+    #Create the edited img file that will be swaped with our inputted one
+    cv2.imwrite("newIMG.jpg", img)
 
 if __name__ == "__main__":
-    findHull('IMG_4102.png')
-    try:
-        os.remove(
-            '/home/joneseaw/code/compGeo/GeometricAlgorithmAnalyzer/newImg.jpg')
-    except:
-        pass
+    findTriangulation('IMG_4102.png')
+    

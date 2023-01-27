@@ -1,6 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QFileDialog
-from imageProcessing import findHull
+from imageProcessing import findTriangulation
 
 ################
 # CODE FOR GUI #
@@ -15,6 +15,7 @@ class Ui_MainWindow(object):
         self.applyAlgo = QtWidgets.QPushButton(self.centralwidget)
         self.applyAlgo.setGeometry(QtCore.QRect(520, 390, 111, 21))
         self.applyAlgo.setObjectName("pushButton")
+        self.applyAlgo.clicked.connect(self.applyAlgoClick)
         self.label = QtWidgets.QLabel(self.centralwidget)
         self.label.setGeometry(QtCore.QRect(50, 20, 401, 401))
         self.label.setLineWidth(1)
@@ -88,17 +89,19 @@ class Ui_MainWindow(object):
         self.comboBox.setItemText(1, _translate("MainWindow", "Trianglulization")) 
         self.label_2.setText(_translate("MainWindow", "Geometric Algorithm Applier"))
         self.label_3.setText(_translate("MainWindow", "Made by: Ethan J and John T"))
-        self.actionLoad_Image.setText(_translate("MainWindow", "Load Image"))      
+        self.actionLoad_Image.setText(_translate("MainWindow", "Load Image"))
     
     def loadImageClick(self):
-        self.response = QFileDialog.getOpenFileName(
+        global response
+        response = QFileDialog.getOpenFileName(
             caption='Select Image File',
         )
-        self.label.setPixmap(QtGui.QPixmap(self.response[0]))
+        
+        self.label.setPixmap(QtGui.QPixmap(response[0]))
     
     def applyAlgoClick(self):
-        findHull(self.response[0])
-        self.label.setPixmap(QtGui.QPixmap('newIMG.jpg'))
+        findTriangulation(response[0])
+        self.label.setPixmap(QtGui.QPixmap("newIMG.jpg"))
         
 
 if __name__ == "__main__":
