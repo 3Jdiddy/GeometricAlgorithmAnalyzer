@@ -1,6 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QFileDialog
-from imageProcessing import findTriangulation
+from imageProcessing import findTriangulation, cameraOn, convexHull
 
 ################
 # CODE FOR GUI #
@@ -28,10 +28,10 @@ class Ui_MainWindow(object):
         self.loadImage.setObjectName("loadImage")
         self.loadImage.clicked.connect(self.loadImageClick)
         self.response = []
-        self.progressBar = QtWidgets.QProgressBar(self.centralwidget)
-        self.progressBar.setGeometry(QtCore.QRect(70, 430, 401, 23))
-        self.progressBar.setProperty("value", 24)
-        self.progressBar.setObjectName("progressBar")
+        #self.progressBar = QtWidgets.QProgressBar(self.centralwidget)
+        #self.progressBar.setGeometry(QtCore.QRect(70, 430, 401, 23))
+        #self.progressBar.setProperty("value", 24)
+        #self.progressBar.setObjectName("progressBar")
         self.line = QtWidgets.QFrame(self.centralwidget)
         self.line.setGeometry(QtCore.QRect(473, 20, 21, 521))
         self.line.setFrameShape(QtWidgets.QFrame.VLine)
@@ -40,6 +40,7 @@ class Ui_MainWindow(object):
         self.useCamera = QtWidgets.QPushButton(self.centralwidget)
         self.useCamera.setGeometry(QtCore.QRect(320, 460, 75, 23))
         self.useCamera.setObjectName("useCamera")
+        self.useCamera.clicked.connect(self.useCameraClick)
         self.frame = QtWidgets.QFrame(self.centralwidget)
         self.frame.setGeometry(QtCore.QRect(49, 19, 401, 401))
         self.frame.setFrameShape(QtWidgets.QFrame.WinPanel)
@@ -86,7 +87,7 @@ class Ui_MainWindow(object):
         self.loadImage.setText(_translate("MainWindow", "Load Image"))
         self.useCamera.setText(_translate("MainWindow", "Use Camera"))
         self.comboBox.setItemText(0, _translate("MainWindow", "Convex Hull"))      
-        self.comboBox.setItemText(1, _translate("MainWindow", "Trianglulization")) 
+        self.comboBox.setItemText(1, _translate("MainWindow", "Triangulation")) 
         self.label_2.setText(_translate("MainWindow", "Geometric Algorithm Applier"))
         self.label_3.setText(_translate("MainWindow", "Made by: Ethan J and John T"))
         self.actionLoad_Image.setText(_translate("MainWindow", "Load Image"))
@@ -96,12 +97,22 @@ class Ui_MainWindow(object):
         response = QFileDialog.getOpenFileName(
             caption='Select Image File',
         )
-        
         self.label.setPixmap(QtGui.QPixmap(response[0]))
     
     def applyAlgoClick(self):
-        findTriangulation(response[0])
-        self.label.setPixmap(QtGui.QPixmap("newIMG.jpg"))
+        if  self.comboBox.currentText() == "Triangulation":
+            findTriangulation(response[0])
+            self.label.setPixmap(QtGui.QPixmap("newIMG.jpg"))
+        else:
+            convexHull(response[0])
+            self.label.setPixmap(QtGui.QPixmap("newIMG.jpg"))
+
+    def useCameraClick(self):
+        global response
+        response = ['', '']
+        cameraOn()
+        self.label.setPixmap(QtGui.QPixmap('frameIMG.jpg'))
+        response[0] = 'frameIMG.jpg'
         
 
 if __name__ == "__main__":
