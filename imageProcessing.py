@@ -13,13 +13,17 @@ def cameraOn():  # add camera argument later
 
         cv2.imwrite('frameIMG.jpg', frame)
         cv2.imshow('frame', frame)
-
-        # temparary break function-- I will integrate this better with a button in the GUI in the futurel
-        if cv2.waitKey(1) == ord('q'):
-            break
-
+        break
     cap.release()
     cv2.destroyAllWindows()
+
+
+        # temparary break function-- I will integrate this better with a button in the GUI in the future
+        #if cv2.waitKey(1) == ord('q'):
+        #    break
+
+    #cap.release()
+    #cv2.destroyAllWindows()
 
 
 # This didn't work well as an alternative, so it is unused for now.
@@ -213,5 +217,5 @@ def convexHull(img):
 if __name__ == "__main__":
     # templateMatching()
     # cameraOn()
-    findTriangulation('IMG_4103.png')
+    #findTriangulation('IMG_4103.png')
     pass

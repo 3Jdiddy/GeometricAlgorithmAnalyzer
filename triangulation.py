@@ -48,7 +48,7 @@ class Delaunay2D:
         idx = len(self.coords)
         self.coords.append(p)
 
-        bad_triangles = []
+        bad_triangles = []  # feels mean to call them bad, but from the algorithms I've seen, it seems to be the standard vernacular
         for T in self.triangles:
             if self.inCircle(T, p):
                 bad_triangles.append(T)

@@ -82,14 +82,14 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "Algorithm Applier"))   
+        MainWindow.setWindowTitle(_translate("MainWindow", "Geometric Algorithms"))   
         self.applyAlgo.setText(_translate("MainWindow", "Apply Algorithm"))       
         self.loadImage.setText(_translate("MainWindow", "Load Image"))
         self.useCamera.setText(_translate("MainWindow", "Use Camera"))
         self.comboBox.setItemText(0, _translate("MainWindow", "Convex Hull"))      
         self.comboBox.setItemText(1, _translate("MainWindow", "Triangulation")) 
-        self.label_2.setText(_translate("MainWindow", "Geometric Algorithm Applier"))
-        self.label_3.setText(_translate("MainWindow", "Made by: Ethan J and John T"))
+        self.label_2.setText(_translate("MainWindow", "Geometric Algorithms"))
+        self.label_3.setText(_translate("MainWindow", "Made by: Ethan Jones"))
         self.actionLoad_Image.setText(_translate("MainWindow", "Load Image"))
     
     def loadImageClick(self):
